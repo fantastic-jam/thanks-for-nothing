@@ -24,6 +24,13 @@ public class Player : KinematicBody2D
     public override void _Process(float delta)
     {
         ZIndex = (int) Position.y;
+        HandleInputs();
+        HandleBody();
+        Update(); // Force redraw
+    }
+
+    private void HandleInputs()
+    {
         if (Input.IsActionJustPressed($"attack_{_device}"))
         {
             Attack();
@@ -33,13 +40,15 @@ public class Player : KinematicBody2D
             Input.GetActionStrength($"right_{_device}") - Input.GetActionStrength($"left_{_device}"),
             Input.GetActionStrength($"down_{_device}") - Input.GetActionStrength($"up_{_device}")
         ).Normalized() * _speed;
+    }
+
+    private void HandleBody()
+    {
         if (_velocity != Vector2.Zero)
         {
             _direction = _velocity.Normalized();
             _sprite.FlipH = _velocity.x < 0;
         }
-
-        Update(); // Force redraw
     }
 
     private void Attack()

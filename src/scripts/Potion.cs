@@ -25,7 +25,7 @@ public class Potion : StaticBody2D
         if (Destination == Vector2.Zero) return;
         if ((Position - Destination).Length() < 5.0f)
         {
-            OnDestinationReached();
+            CallDeferred(nameof(OnDestinationReached));
             return;
         }
         TravelToDestination(delta);

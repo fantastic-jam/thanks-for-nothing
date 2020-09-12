@@ -3,7 +3,7 @@ using Godot;
 
 public class Wizzard : Sprite
 {
-    [Export] private float _dropIntervalInSec = 5.0f;
+    [Export] private float _dropIntervalInSec = 30.0f;
     [Export] private PackedScene _potionPrefab = null;
     private readonly RandomNumberGenerator _rand = new RandomNumberGenerator();
     private DropZone _dropZone;
@@ -29,7 +29,6 @@ public class Wizzard : Sprite
             _rand.RandfRange(_dropZone.Zone.Position.x, _dropZone.Zone.End.x),
             _rand.RandfRange(_dropZone.Zone.Position.y, _dropZone.Zone.End.y)
         );
-        GD.Print($"Grab a potion at {location}");
         var potion = (Potion)_potionPrefab.Instance();
         potion.Position = GlobalPosition;
         potion.Rotation = _rand.Randf() * 2 * (float)Math.PI;
