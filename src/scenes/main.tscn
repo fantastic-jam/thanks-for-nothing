@@ -1,11 +1,15 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://assets/sprites/0x72_16x16DungeonTileset.v4.png" type="Texture" id=1]
-[ext_resource path="res://scripts/PlayerController.cs" type="Script" id=2]
+[ext_resource path="res://scripts/Player.cs" type="Script" id=2]
 [ext_resource path="res://assets/tilesets/world.tres" type="TileSet" id=3]
 [ext_resource path="res://prefabs/Sword.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scripts/Monster.cs" type="Script" id=5]
 
 [sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 6, 4 )
+
+[sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 6, 4 )
 
 [node name="Node2D" type="Node2D"]
@@ -34,9 +38,25 @@ centered = false
 region_enabled = true
 region_rect = Rect2( 96, 240, 16, 16 )
 
+[node name="Monster" type="KinematicBody2D" parent="."]
+position = Vector2( 404.086, 236.84 )
+scale = Vector2( 2, 2 )
+script = ExtResource( 5 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Monster"]
+position = Vector2( 8, 12 )
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="Monster"]
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 80, 160, 16, 16 )
+
 [node name="TileMapForeground" type="TileMap" parent="."]
 position = Vector2( 0, -1 )
 scale = Vector2( 2, 2 )
+z_index = 4096
 tile_set = ExtResource( 3 )
 cell_size = Vector2( 16, 16 )
 format = 1
