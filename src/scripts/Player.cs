@@ -1,6 +1,6 @@
 using Godot;
 
-public class PlayerController : KinematicBody2D
+public class Player : KinematicBody2D
 {
     [Export] private PackedScene _swordPrefab = null;
     [Export] private float _speed = 150.0f;
