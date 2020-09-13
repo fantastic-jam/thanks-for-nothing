@@ -4,7 +4,9 @@ using Timer = Godot.Timer;
 
 public class GameManager : Node
 {
-    [Export] private int _maxMonsterCount = 1;
+    private readonly RandomNumberGenerator _rand = new RandomNumberGenerator();
+
+    [Export] private int _maxMonsterCount = 10;
     [Export] private PackedScene _playerPrefab = null;
     [Export] private PackedScene _monsterPrefab = null;
 
@@ -12,13 +14,22 @@ public class GameManager : Node
     private Node2D _monsterSpawner;
     private int _monsterCount;
     private Player _player;
+    private Timer _monsterSpawnTimer;
 
     public override void _Ready()
     {
+        _rand.Randomize();
         _monsterSpawner = GetNode<Node2D>("MonsterSpawner");
         _playerSpawner = GetNode<Node2D>("PlayerSpawner");
         _player = SpawnPlayer();
-        SpawnMonster();
+        _monsterSpawnTimer = new Timer
+        {
+            OneShot = false,
+            Autostart = true,
+            WaitTime = 2
+        };
+        _monsterSpawnTimer.Connect("timeout", this, nameof(SpawnMonster));
+        AddChild(_monsterSpawnTimer);
     }
 
     private Player SpawnPlayer()
@@ -32,24 +43,23 @@ public class GameManager : Node
 
     private void SpawnMonster()
     {
+        if (_monsterCount >= _maxMonsterCount) return;
         var monster = (Monster) _monsterPrefab.Instance();
         Interlocked.Increment(ref _monsterCount);
         monster.Target = _player;
-        monster.Position = _monsterSpawner.Position;
+        monster.Position = _monsterSpawner.Position + new Vector2(_rand.RandiRange(-120, 120), 0.0f);
         monster.OnDeath += OnMonsterDeath;
         AddChild(monster);
     }
 
     private void OnMonsterDeath()
     {
-        if (Interlocked.Decrement(ref _monsterCount) < _maxMonsterCount)
-        {
-            SpawnMonster();
-        }
+        Interlocked.Decrement(ref _monsterCount);
     }
 
     private void OnPlayerDeath()
     {
+        _monsterSpawnTimer.Stop();
         var timer = new Timer
         {
             OneShot = true,

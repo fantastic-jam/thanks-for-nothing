@@ -62,11 +62,10 @@ script = ExtResource( 4 )
 _potionPrefab = ExtResource( 8 )
 
 [node name="DropZone" type="Area2D" parent="."]
-position = Vector2( 320, 240 )
+position = Vector2( 432, 240 )
 script = ExtResource( 7 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DropZone"]
 modulate = Color( 0.192157, 0.470588, 0.454902, 0.670588 )
-position = Vector2( 112, 0 )
 shape = SubResource( 1 )
 disabled = true
