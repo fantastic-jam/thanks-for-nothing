@@ -16,6 +16,9 @@ public class GameManager : Node
     private Player _player;
     private Timer _monsterSpawnTimer;
 
+    private int _monsterMaxHealth = 100;
+    private int _monsterDamage = 2;
+
     public override void _Ready()
     {
         _rand.Randomize();
@@ -26,7 +29,7 @@ public class GameManager : Node
         {
             OneShot = false,
             Autostart = true,
-            WaitTime = 3.5f
+            WaitTime = 2f
         };
         _monsterSpawnTimer.Connect("timeout", this, nameof(SpawnMonster));
         AddChild(_monsterSpawnTimer);
@@ -48,6 +51,8 @@ public class GameManager : Node
         Interlocked.Increment(ref _monsterCount);
         monster.Target = _player;
         monster.Position = _monsterSpawner.Position + new Vector2(_rand.RandiRange(-120, 120), 0.0f);
+        monster.Damage = _monsterDamage++;
+        monster.MaxHealth = _monsterMaxHealth++;
         monster.OnDeath += OnMonsterDeath;
         AddChild(monster);
     }

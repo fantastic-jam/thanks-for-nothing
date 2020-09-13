@@ -4,8 +4,10 @@ using Godot;
 public class Monster : KinematicBody2D
 {
     [Export] private float _speed = 125.0f;
-    [Export] private int _maxHealth = 100;
-    [Export] private int _health = 100;
+
+    public int MaxHealth = 100;
+    public int Health = 100;
+    public int Damage = 5;
 
     public Player Target;
     public event Action OnDeath;
@@ -17,6 +19,7 @@ public class Monster : KinematicBody2D
 
     public override void _Ready()
     {
+        Health = MaxHealth;
         _sprite = GetNode<Sprite>("Sprite");
         _healthBar = (ProgressBar) FindNode("HealthBar");
         Target.OnDeath += () => Target = null;
@@ -49,7 +52,7 @@ public class Monster : KinematicBody2D
         if (collision.Collider is Player player)
         {
             Vector2 bump = player.Position.DirectionTo(Position) * 500.0f;
-            player.OnHit(this);
+            player.OnHit(this, Damage);
             MoveAndSlide(bump);
         }
     }
@@ -64,15 +67,15 @@ public class Monster : KinematicBody2D
 
     private void UpdateGUI()
     {
-        _healthBar.MaxValue = _maxHealth;
-        _healthBar.Value = _health;
+        _healthBar.MaxValue = MaxHealth;
+        _healthBar.Value = Health;
     }
 
     public void OnHit(Player player, int damage)
     {
         MoveAndSlide(player.Position.DirectionTo(Position) * 500.0f);
-        _health -= damage;
-        if (_health < 1)
+        Health -= damage;
+        if (Health < 1)
         {
             QueueFree();
             OnDeath?.Invoke();

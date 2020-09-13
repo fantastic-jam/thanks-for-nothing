@@ -86,12 +86,12 @@ public class Potion : StaticBody2D
         switch (effect)
         {
             case Effect.HealthUp:
-                player.Health = Math.Min(player.Health + 20, player.MaxHealth);
+                player.Health = Math.Min((int)(player.Health + player.MaxHealth * 0.10f), player.MaxHealth);
                 label.Text = "health++";
                 label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
                 break;
             case Effect.HealthDown:
-                player.Health = Math.Max(player.Health - 20, 1);
+                player.Health = Math.Max((int)(player.Health - player.MaxHealth * 0.05f), 1);
                 label.Text = "health--";
                 label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
                 break;
@@ -117,7 +117,7 @@ public class Potion : StaticBody2D
                 label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
                 break;
             case Effect.DamageUp:
-                player.Damage += 5;
+                player.Damage += 10;
                 label.Text = "dmg++";
                 label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
                 break;

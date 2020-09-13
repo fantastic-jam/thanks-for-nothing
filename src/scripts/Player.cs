@@ -9,7 +9,7 @@ public class Player : KinematicBody2D
     private uint _attackCooldown = 300;
     public int MaxHealth = 100;
     public int Health;
-    public int Damage = 25;
+    public int Damage = 40;
     public float Speed = 150.0f;
 
     public event Action OnDeath;
@@ -93,10 +93,10 @@ public class Player : KinematicBody2D
         //DrawLine(_center, _center + _velocity, Color.Color8(255, 255, 10));
     }
 
-    public void OnHit(Monster monster)
+    public void OnHit(Monster monster, int damage)
     {
         MoveAndSlide(monster.Position.DirectionTo(Position) * 250.0f);
-        Health -= 2;
+        Health -= damage;
         if (Health < 1)
         {
             OnDeath?.Invoke();
