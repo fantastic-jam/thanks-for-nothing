@@ -3,7 +3,7 @@ using Godot;
 
 public class Wizzard : Sprite
 {
-    [Export] private float _dropIntervalInSec = 10.0f;
+    [Export] private float _dropIntervalInSec = 20.0f;
     [Export] private PackedScene _potionPrefab = null;
     private readonly RandomNumberGenerator _rand = new RandomNumberGenerator();
     private DropZone _dropZone;

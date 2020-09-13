@@ -6,6 +6,8 @@ public class Potion : StaticBody2D
     private const float Speed = 300.0f;
     private readonly RandomNumberGenerator _rand = new RandomNumberGenerator();
 
+    [Export] private PackedScene _labelPrefab = null;
+
     public Vector2 Destination;
 
     private Area2D _area;
@@ -75,22 +77,32 @@ public class Potion : StaticBody2D
     private void ApplyTo(Player player)
     {
         var effect = (Effect) _rand.RandiRange(0, EffectList.Length - 1);
-        GD.Print($"{effect} potion");
+        var floatingLabel = (Node2D)_labelPrefab.Instance();
+        var label = floatingLabel.GetNode<Label>("Label");
         switch (effect)
         {
             case Effect.Heal:
                 player.Health = Math.Min(player.Health + 20, player.MaxHealth);
+                label.Text = "health++";
+                label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
                 break;
             case Effect.Poison:
                 player.Health = Math.Max(player.Health - 20, 1);
+                label.Text = "health--";
+                label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
                 break;
             case Effect.SpeedUp:
                 player.Speed += 20;
+                label.Text = "speed++";
+                label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
                 break;
             case Effect.SpeedDown:
-                player.Speed = Math.Max(player.Speed - 20, 100);
+                player.Speed = Math.Max(player.Speed - 10, 100);
+                label.Text = "speed--";
+                label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
                 break;
         }
+        player.AddChild(floatingLabel);
     }
 
     private void OnDestinationReached()
