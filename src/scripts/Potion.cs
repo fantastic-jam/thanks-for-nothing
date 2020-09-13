@@ -4,6 +4,7 @@ using Godot;
 public class Potion : StaticBody2D
 {
     private const float Speed = 300.0f;
+    private readonly RandomNumberGenerator _rand = new RandomNumberGenerator();
 
     public Vector2 Destination;
 
@@ -14,6 +15,7 @@ public class Potion : StaticBody2D
 
     public override void _Ready()
     {
+        _rand.Randomize();
         _area = GetNode<Area2D>("Area2D");
         _sprite = GetNode<Sprite>("Sprite");
         _origin = Position;
@@ -28,6 +30,7 @@ public class Potion : StaticBody2D
             CallDeferred(nameof(OnDestinationReached));
             return;
         }
+
         TravelToDestination(delta);
     }
 
@@ -55,8 +58,39 @@ public class Potion : StaticBody2D
     {
         if (!(other is Player player))
             return;
-        GD.Print("Drink");
+        ApplyTo(player);
         QueueFree();
+    }
+
+    private enum Effect
+    {
+        Heal,
+        Poison,
+        SpeedUp,
+        SpeedDown
+    }
+
+    private static readonly Array EffectList = Enum.GetValues(typeof(Effect));
+
+    private void ApplyTo(Player player)
+    {
+        var effect = (Effect) _rand.RandiRange(0, EffectList.Length - 1);
+        GD.Print($"{effect} potion");
+        switch (effect)
+        {
+            case Effect.Heal:
+                player.Health = Math.Min(player.Health + 20, player.MaxHealth);
+                break;
+            case Effect.Poison:
+                player.Health = Math.Max(player.Health - 20, 1);
+                break;
+            case Effect.SpeedUp:
+                player.Speed += 20;
+                break;
+            case Effect.SpeedDown:
+                player.Speed = Math.Max(player.Speed - 20, 100);
+                break;
+        }
     }
 
     private void OnDestinationReached()

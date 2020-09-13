@@ -4,11 +4,9 @@ using Godot;
 public class Player : KinematicBody2D
 {
     [Export] private PackedScene _swordPrefab = null;
-    [Export] private float _speed = 150.0f;
     [Export] private uint _attackCooldown = 300;
     [Export] private int _device = 0;
-    [Export] private int _maxHealth = 100;
-    [Export] private int _health = 100;
+    [Export] public int MaxHealth = 100;
     [Export] private int _damage = 25;
 
     public event Action OnDeath;
@@ -20,9 +18,12 @@ public class Player : KinematicBody2D
     private Vector2 _direction = Vector2.Up;
     private Vector2 _velocity = Vector2.Zero;
     private uint _nextAttackTime = 0;
+    public int Health;
+    public float Speed = 150.0f;
 
     public override void _Ready()
     {
+        Health = MaxHealth;
         _sprite = GetNode<Sprite>("Sprite");
         _size = _sprite.RegionRect.Size;
         _center = new Vector2(_size.x / 2, _size.y / 2);
@@ -40,8 +41,8 @@ public class Player : KinematicBody2D
 
     private void UpdateGUI()
     {
-        _healthBar.MaxValue = _maxHealth;
-        _healthBar.Value = _health;
+        _healthBar.MaxValue = MaxHealth;
+        _healthBar.Value = Health;
     }
 
 
@@ -55,7 +56,7 @@ public class Player : KinematicBody2D
         _velocity = new Vector2(
             Input.GetActionStrength($"right_{_device}") - Input.GetActionStrength($"left_{_device}"),
             Input.GetActionStrength($"down_{_device}") - Input.GetActionStrength($"up_{_device}")
-        ).Normalized() * _speed;
+        ).Normalized() * Speed;
     }
 
     private void HandleBody()
@@ -94,8 +95,8 @@ public class Player : KinematicBody2D
     public void OnHit(Monster monster)
     {
         MoveAndSlide(monster.Position.DirectionTo(Position) * 250.0f);
-        _health -= 2;
-        if (_health < 1)
+        Health -= 2;
+        if (Health < 1)
         {
             OnDeath?.Invoke();
             QueueFree();
