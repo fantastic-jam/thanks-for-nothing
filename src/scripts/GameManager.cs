@@ -1,5 +1,6 @@
 using System.Threading;
 using Godot;
+using Timer = Godot.Timer;
 
 public class GameManager : Node
 {
@@ -24,6 +25,7 @@ public class GameManager : Node
     {
         var player = (Player) _playerPrefab.Instance();
         player.Position = _playerSpawner.Position;
+        player.OnDeath += OnPlayerDeath;
         AddChild(player);
         return player;
     }
@@ -44,5 +46,22 @@ public class GameManager : Node
         {
             SpawnMonster();
         }
+    }
+
+    private void OnPlayerDeath()
+    {
+        var timer = new Timer
+        {
+            OneShot = true,
+            Autostart = true,
+            WaitTime = 5
+        };
+        timer.Connect("timeout", this, nameof(ReloadGame));
+        AddChild(timer);
+    }
+
+    private void ReloadGame()
+    {
+        GetTree().ReloadCurrentScene();
     }
 }

@@ -63,7 +63,7 @@
     <Compile Include="scripts\Monster.cs" />
     <Compile Include="scripts\Player.cs" />
     <Compile Include="scripts\Potion.cs" />
-    <Compile Include="scripts\SwordCollision.cs" />
+    <Compile Include="scripts\Sword.cs" />
     <Compile Include="scripts\Wizzard.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

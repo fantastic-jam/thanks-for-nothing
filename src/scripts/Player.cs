@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 public class Player : KinematicBody2D
@@ -6,8 +7,14 @@ public class Player : KinematicBody2D
     [Export] private float _speed = 150.0f;
     [Export] private uint _attackCooldown = 300;
     [Export] private int _device = 0;
+    [Export] private int _maxHealth = 100;
+    [Export] private int _health = 100;
+    [Export] private int _damage = 25;
+
+    public event Action OnDeath;
 
     private Sprite _sprite;
+    private ProgressBar _healthBar;
     private Vector2 _center = Vector2.Zero;
     private Vector2 _size = Vector2.Zero;
     private Vector2 _direction = Vector2.Up;
@@ -19,15 +26,24 @@ public class Player : KinematicBody2D
         _sprite = GetNode<Sprite>("Sprite");
         _size = _sprite.RegionRect.Size;
         _center = new Vector2(_size.x / 2, _size.y / 2);
+        _healthBar = (ProgressBar) FindNode("HealthBar");
     }
 
     public override void _Process(float delta)
     {
         ZIndex = (int) Position.y;
+        UpdateGUI();
         HandleInputs();
         HandleBody();
         Update(); // Force redraw
     }
+
+    private void UpdateGUI()
+    {
+        _healthBar.MaxValue = _maxHealth;
+        _healthBar.Value = _health;
+    }
+
 
     private void HandleInputs()
     {
@@ -57,9 +73,11 @@ public class Player : KinematicBody2D
         if (_nextAttackTime > time) return;
 
         _nextAttackTime = time + _attackCooldown;
-        var sword = (StaticBody2D) _swordPrefab.Instance();
+        var sword = (Sword) _swordPrefab.Instance();
         sword.Position = _center + _direction * 10;
         sword.Rotation = -_direction.AngleTo(Vector2.Up);
+        sword.player = this;
+        sword.damage = _damage;
         AddChild(sword);
     }
 
@@ -71,5 +89,16 @@ public class Player : KinematicBody2D
     public override void _Draw()
     {
         //DrawLine(_center, _center + _velocity, Color.Color8(255, 255, 10));
+    }
+
+    public void OnHit(Monster monster)
+    {
+        MoveAndSlide(monster.Position.DirectionTo(Position) * 250.0f);
+        _health -= 2;
+        if (_health < 1)
+        {
+            OnDeath?.Invoke();
+            QueueFree();
+        }
     }
 }
