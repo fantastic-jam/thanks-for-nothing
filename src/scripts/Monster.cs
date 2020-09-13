@@ -7,7 +7,7 @@ public class Monster : KinematicBody2D
 
     public int MaxHealth = 100;
     public int Health = 100;
-    public int Damage = 5;
+    public int Damage = 2;
 
     public Player Target;
     public event Action OnDeath;

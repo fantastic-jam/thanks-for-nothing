@@ -12,16 +12,17 @@ public class GameManager : Node
 
     private Node2D _playerSpawner;
     private Node2D _monsterSpawner;
-    private int _monsterCount;
     private Player _player;
     private Timer _monsterSpawnTimer;
+    private HUD _hud;
 
-    private int _monsterMaxHealth = 100;
-    private int _monsterDamage = 2;
+    private int _monsterCount;
+    private int _monsterKill;
 
     public override void _Ready()
     {
         _rand.Randomize();
+        _hud = GetNode<HUD>("HUD");
         _monsterSpawner = GetNode<Node2D>("MonsterSpawner");
         _playerSpawner = GetNode<Node2D>("PlayerSpawner");
         _player = SpawnPlayer();
@@ -33,6 +34,14 @@ public class GameManager : Node
         };
         _monsterSpawnTimer.Connect("timeout", this, nameof(SpawnMonster));
         AddChild(_monsterSpawnTimer);
+    }
+
+    public override void _Process(float delta)
+    {
+        _hud.MonsterKill = _monsterKill;
+        _hud.MaxHealth = _player.MaxHealth;
+        _hud.Damage = _player.Damage;
+        _hud.Speed = (int)_player.Speed;
     }
 
     private Player SpawnPlayer()
@@ -51,8 +60,8 @@ public class GameManager : Node
         Interlocked.Increment(ref _monsterCount);
         monster.Target = _player;
         monster.Position = _monsterSpawner.Position + new Vector2(_rand.RandiRange(-120, 120), 0.0f);
-        monster.Damage = _monsterDamage++;
-        monster.MaxHealth = _monsterMaxHealth++;
+        monster.Damage += _monsterKill / 10;
+        monster.MaxHealth += _monsterKill;
         monster.OnDeath += OnMonsterDeath;
         AddChild(monster);
     }
@@ -60,6 +69,7 @@ public class GameManager : Node
     private void OnMonsterDeath()
     {
         Interlocked.Decrement(ref _monsterCount);
+        _monsterKill++;
     }
 
     private void OnPlayerDeath()
