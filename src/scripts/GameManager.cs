@@ -26,7 +26,7 @@ public class GameManager : Node
         {
             OneShot = false,
             Autostart = true,
-            WaitTime = 2
+            WaitTime = 3.5f
         };
         _monsterSpawnTimer.Connect("timeout", this, nameof(SpawnMonster));
         AddChild(_monsterSpawnTimer);

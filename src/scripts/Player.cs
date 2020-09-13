@@ -4,10 +4,13 @@ using Godot;
 public class Player : KinematicBody2D
 {
     [Export] private PackedScene _swordPrefab = null;
-    [Export] private uint _attackCooldown = 300;
     [Export] private int _device = 0;
-    [Export] public int MaxHealth = 100;
-    [Export] private int _damage = 25;
+
+    private uint _attackCooldown = 300;
+    public int MaxHealth = 100;
+    public int Health;
+    public int Damage = 25;
+    public float Speed = 150.0f;
 
     public event Action OnDeath;
 
@@ -18,8 +21,6 @@ public class Player : KinematicBody2D
     private Vector2 _direction = Vector2.Up;
     private Vector2 _velocity = Vector2.Zero;
     private uint _nextAttackTime = 0;
-    public int Health;
-    public float Speed = 150.0f;
 
     public override void _Ready()
     {
@@ -78,7 +79,7 @@ public class Player : KinematicBody2D
         sword.Position = _center + _direction * 10;
         sword.Rotation = -_direction.AngleTo(Vector2.Up);
         sword.player = this;
-        sword.damage = _damage;
+        sword.damage = Damage;
         AddChild(sword);
     }
 

@@ -66,10 +66,14 @@ public class Potion : StaticBody2D
 
     private enum Effect
     {
-        Heal,
-        Poison,
+        HealthUp,
+        HealthDown,
+        MaxHealthUp,
+        MaxHealthDown,
         SpeedUp,
-        SpeedDown
+        SpeedDown,
+        DamageUp,
+        DamageDown
     }
 
     private static readonly Array EffectList = Enum.GetValues(typeof(Effect));
@@ -81,14 +85,25 @@ public class Potion : StaticBody2D
         var label = floatingLabel.GetNode<Label>("Label");
         switch (effect)
         {
-            case Effect.Heal:
+            case Effect.HealthUp:
                 player.Health = Math.Min(player.Health + 20, player.MaxHealth);
                 label.Text = "health++";
                 label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
                 break;
-            case Effect.Poison:
+            case Effect.HealthDown:
                 player.Health = Math.Max(player.Health - 20, 1);
                 label.Text = "health--";
+                label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
+                break;
+            case Effect.MaxHealthUp:
+                player.MaxHealth += 20;
+                label.Text = "max hp++";
+                label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
+                break;
+            case Effect.MaxHealthDown:
+                player.MaxHealth = Math.Max(player.MaxHealth - 10, 1);
+                player.Health = Math.Min(player.Health, player.MaxHealth);
+                label.Text = "max hp--";
                 label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
                 break;
             case Effect.SpeedUp:
@@ -99,6 +114,16 @@ public class Potion : StaticBody2D
             case Effect.SpeedDown:
                 player.Speed = Math.Max(player.Speed - 10, 100);
                 label.Text = "speed--";
+                label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
+                break;
+            case Effect.DamageUp:
+                player.Damage += 5;
+                label.Text = "dmg++";
+                label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
+                break;
+            case Effect.DamageDown:
+                player.Damage = Math.Max(player.Damage - 3, 5);
+                label.Text = "dmg--";
                 label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
                 break;
         }
