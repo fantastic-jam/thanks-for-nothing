@@ -15,6 +15,7 @@ public class Unit : KinematicBody2D
 
     protected Sprite _sprite;
     protected ProgressBar _healthBar;
+    protected AnimationPlayer _animationPlayer;
     protected Vector2 _center = Vector2.Zero;
     protected Vector2 _size = Vector2.Zero;
     protected Vector2 _direction = Vector2.Up;
@@ -25,6 +26,7 @@ public class Unit : KinematicBody2D
     {
         _sprite = GetNode<Sprite>("Sprite");
         _healthBar = (ProgressBar) FindNode("HealthBar");
+        _animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
         _size = _sprite.RegionRect.Size;
         _center = new Vector2(_size.x / 2, _size.y / 2);
     }
@@ -51,8 +53,13 @@ public class Unit : KinematicBody2D
     {
         if (_velocity != Vector2.Zero)
         {
+            _animationPlayer.Play("walk");
             _direction = _velocity.Normalized();
             _sprite.FlipH = _velocity.x < 0 ? LookingToRight : !LookingToRight;
+        }
+        else
+        {
+            _animationPlayer.Stop();
         }
     }
 
