@@ -9,6 +9,7 @@ public class GameManager : Node
     [Export] private int _maxMonsterCount = 10;
     [Export] private PackedScene _playerPrefab = null;
     [Export] private PackedScene _monsterPrefab = null;
+    [Export] private PackedScene _gameOver = null;
 
     private Node2D _playerSpawner;
     private Node2D _monsterSpawner;
@@ -18,6 +19,7 @@ public class GameManager : Node
 
     private int _monsterCount;
     private int _monsterKill;
+    private bool _isGameOver = false;
 
     public override void _Ready()
     {
@@ -42,6 +44,21 @@ public class GameManager : Node
         _hud.MaxHealth = _player.MaxHealth;
         _hud.Damage = _player.Damage;
         _hud.Speed = (int)_player.Speed;
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        if (_isGameOver)
+        {
+            switch (@event)
+            {
+                case InputEventKey _:
+                case InputEventMouseButton _:
+                case InputEventJoypadButton _:
+                    ReloadGame();
+                    break;
+            }
+        }
     }
 
     private Player SpawnPlayer()
@@ -80,10 +97,16 @@ public class GameManager : Node
         {
             OneShot = true,
             Autostart = true,
-            WaitTime = 5
+            WaitTime = 2
         };
-        timer.Connect("timeout", this, nameof(ReloadGame));
+        timer.Connect("timeout", this, nameof(GameOver));
         AddChild(timer);
+    }
+
+    private void GameOver()
+    {
+        _isGameOver = true;
+        AddChild(_gameOver.Instance());
     }
 
     private void ReloadGame()
