@@ -79,7 +79,7 @@ public class Potion : Node
     {
         ShowEffect(unit);
         unit.MaxHealth = Math.Max(1, unit.MaxHealth + (int) (unit.MaxHealth * _maxHealthBonusRatio));
-        unit.Health += Math.Max(1, Math.Min(unit.Health + (int) (unit.MaxHealth * _healthBonusRatio), unit.MaxHealth));
+        unit.Health = Math.Max(1, Math.Min(unit.Health + (int) (unit.MaxHealth * _healthBonusRatio), unit.MaxHealth));
         unit.Speed = Math.Max(100, unit.Speed + unit.Speed * _speedBonusRatio);
         unit.Damage = Math.Max(10, unit.Damage + (int) (unit.Damage * _damageBonusRatio));
     }

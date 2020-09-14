@@ -8,14 +8,14 @@ public class Wizzard : Sprite
     [Export] private float _dropIntervalInSec = 6.0f;
     [Export] private PackedScene[] _potionPrefabs;
 
-    private DropZone _dropZone;
+    private Arena _arena;
     private Node _scene;
 
     public override void _Ready()
     {
         _rand.Randomize();
         _scene = GetTree().CurrentScene;
-        _dropZone = _scene.FindNode("DropZone", true, false) as DropZone;
+        _arena = _scene.FindNode("Arena", true, false) as Arena;
         var timer = new Timer
         {
             WaitTime = _dropIntervalInSec,
@@ -29,8 +29,8 @@ public class Wizzard : Sprite
     private void ProvideHelp()
     {
         var location = new Vector2(
-            _rand.RandfRange(_dropZone.Zone.Position.x, _dropZone.Zone.End.x),
-            _rand.RandfRange(_dropZone.Zone.Position.y, _dropZone.Zone.End.y)
+            _rand.RandfRange(_arena.Zone.Position.x, _arena.Zone.End.x),
+            _rand.RandfRange(_arena.Zone.Position.y, _arena.Zone.End.y)
         );
         int potionPick = _rand.RandiRange(0, _potionPrefabs.Length - 1);
         var potion = (Potion)_potionPrefabs[potionPick].Instance();

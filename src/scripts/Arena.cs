@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-public class DropZone : Area2D
+public class Arena : Area2D
 {
     public Rect2 Zone { get; private set; }
 

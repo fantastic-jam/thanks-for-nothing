@@ -70,8 +70,10 @@ public class Unit : KinematicBody2D
 
     public void OnHit(Unit attacker, int damage)
     {
+        GD.Print($"Unit [Health={Health}, MaxHealth={MaxHealth}] attacked with damage {damage}");
         MoveAndSlide(attacker.Position.DirectionTo(Position) * BumpStrength);
         Health -= damage;
+        GD.Print($"New unit state [Health={Health}, MaxHealth={MaxHealth}]");
         if (Health < 1)
         {
             OnDeath?.Invoke();

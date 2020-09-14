@@ -11,8 +11,8 @@ public class GameManager : Node
     [Export] private PackedScene _monsterPrefab = null;
     [Export] private PackedScene _gameOver = null;
 
+    private Arena _arena;
     private Node2D _playerSpawner;
-    private Node2D _monsterSpawner;
     private Player _player;
     private Timer _monsterSpawnTimer;
     private HUD _hud;
@@ -25,7 +25,7 @@ public class GameManager : Node
     {
         _rand.Randomize();
         _hud = GetNode<HUD>("HUD");
-        _monsterSpawner = GetNode<Node2D>("MonsterSpawner");
+        _arena = GetNode<Arena>("../Arena");
         _playerSpawner = GetNode<Node2D>("PlayerSpawner");
         _player = SpawnPlayer();
         _monsterSpawnTimer = new Timer
@@ -76,12 +76,28 @@ public class GameManager : Node
         var monster = (Monster) _monsterPrefab.Instance();
         Interlocked.Increment(ref _monsterCount);
         monster.Target = _player;
-        monster.Position = _monsterSpawner.Position + new Vector2(_rand.RandiRange(-120, 120), 0.0f);
+        monster.Position = RandomPositionInArena();
         monster.Damage += _monsterKill / 10;
         monster.MaxHealth += _monsterKill;
         monster.Health = monster.MaxHealth;
         monster.OnDeath += OnMonsterDeath;
         AddChild(monster);
+    }
+
+    private Vector2 RandomPositionInArena()
+    {
+        switch (_rand.RandiRange(0, 3))
+        {
+            case 0: // top
+                return new Vector2(_rand.RandfRange(_arena.Zone.Position.x, _arena.Zone.End.x), _arena.Zone.Position.y);
+            case 1: // right
+                return new Vector2(_arena.Zone.End.x, _rand.RandfRange(_arena.Zone.Position.y, _arena.Zone.End.y));
+            case 2: // bottom
+                return new Vector2(_rand.RandfRange(_arena.Zone.Position.x, _arena.Zone.End.x), _arena.Zone.End.y);
+            case 3: // left
+                return new Vector2(_arena.Zone.Position.x, _rand.RandfRange(_arena.Zone.Position.y, _arena.Zone.End.y));
+        }
+        return Vector2.Zero;
     }
 
     private void OnMonsterDeath()
