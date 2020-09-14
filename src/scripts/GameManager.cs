@@ -62,6 +62,7 @@ public class GameManager : Node
         monster.Position = _monsterSpawner.Position + new Vector2(_rand.RandiRange(-120, 120), 0.0f);
         monster.Damage += _monsterKill / 10;
         monster.MaxHealth += _monsterKill;
+        monster.Health = monster.MaxHealth;
         monster.OnDeath += OnMonsterDeath;
         AddChild(monster);
     }

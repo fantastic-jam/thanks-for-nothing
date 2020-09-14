@@ -2,14 +2,11 @@ using Godot;
 
 public class Sword : StaticBody2D
 {
-    public Player player;
-    public int damage;
+    public Unit Fighter { get; set; }
 
     public void OnEnter(Node other)
     {
         if (other is Monster monster)
-        {
-            monster.OnHit(player, damage);
-        }
+            Fighter.Hit(monster);
     }
 }

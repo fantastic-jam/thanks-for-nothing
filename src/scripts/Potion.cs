@@ -78,32 +78,32 @@ public class Potion : StaticBody2D
 
     private static readonly Array EffectList = Enum.GetValues(typeof(Effect));
 
-    private void ApplyTo(Player player)
+    private void ApplyTo(Unit player)
     {
         var effect = (Effect) _rand.RandiRange(0, EffectList.Length - 1);
-        var floatingLabel = (Node2D)_labelPrefab.Instance();
+        var floatingLabel = (Node2D) _labelPrefab.Instance();
         var label = floatingLabel.GetNode<Label>("Label");
         switch (effect)
         {
             case Effect.HealthUp:
-                player.Health = Math.Min((int)(player.Health + player.MaxHealth * 0.30f), player.MaxHealth);
+                player.Health = Math.Min((int) (player.Health + player.MaxHealth * 0.30f), player.MaxHealth);
                 label.Text = "health++";
                 label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
                 break;
             case Effect.HealthDown:
-                player.Health = Math.Max((int)(player.Health - player.MaxHealth * 0.15f), 1);
+                player.Health = Math.Max((int) (player.Health - player.MaxHealth * 0.15f), 1);
                 label.Text = "health--";
                 label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
                 break;
             case Effect.MaxHealthUp:
-                var bonus = (int)(player.MaxHealth * 0.30f);
+                var bonus = (int) (player.MaxHealth * 0.30f);
                 player.MaxHealth += bonus;
                 player.Health = Math.Min(player.Health + bonus, player.MaxHealth);
                 label.Text = "max hp++";
                 label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
                 break;
             case Effect.MaxHealthDown:
-                player.MaxHealth = Math.Max((int)(player.MaxHealth - player.MaxHealth * 0.15f), 1);
+                player.MaxHealth = Math.Max((int) (player.MaxHealth - player.MaxHealth * 0.15f), 1);
                 player.Health = Math.Min(player.Health, player.MaxHealth);
                 label.Text = "max hp--";
                 label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
@@ -119,16 +119,17 @@ public class Potion : StaticBody2D
                 label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
                 break;
             case Effect.DamageUp:
-                player.Damage += (int)(player.Damage * 0.30f);
+                player.Damage += (int) (player.Damage * 0.30f);
                 label.Text = "dmg++";
                 label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
                 break;
             case Effect.DamageDown:
-                player.Damage = Math.Max((int)(player.Damage - player.Damage * 0.05f), 1);
+                player.Damage = Math.Max((int) (player.Damage - player.Damage * 0.05f), 1);
                 label.Text = "dmg--";
                 label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
                 break;
         }
+
         player.AddChild(floatingLabel);
     }
 
