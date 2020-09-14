@@ -3,6 +3,7 @@ using Godot;
 public class Player : Unit
 {
     [Export] private PackedScene _swordPrefab = null;
+    [Export] private PackedScene _gravestonePrefab = null;
     [Export] private int _device = 0;
 
     private uint _attackCooldown = 300;
@@ -17,6 +18,7 @@ public class Player : Unit
         Speed = 150.0f;
         BumpStrength = 250.0f;
         StunDurationMs = 0;
+        OnDeath += DieEffect;
     }
 
     public override void _Process(float delta)
@@ -50,4 +52,10 @@ public class Player : Unit
         AddChild(sword);
     }
 
+    private void DieEffect()
+    {
+        var gravestone = (Node2D)_gravestonePrefab.Instance();
+        gravestone.Position = Position;
+        GetParent().AddChild(gravestone);
+    }
 }
