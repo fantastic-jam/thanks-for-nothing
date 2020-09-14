@@ -87,45 +87,45 @@ public class Potion : StaticBody2D
         {
             case Effect.HealthUp:
                 player.Health = Math.Min((int) (player.Health + player.MaxHealth * 0.30f), player.MaxHealth);
-                label.Text = "health++";
+                label.Text = "HEALTH++";
                 label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
                 break;
             case Effect.HealthDown:
                 player.Health = Math.Max((int) (player.Health - player.MaxHealth * 0.15f), 1);
-                label.Text = "health--";
+                label.Text = "HEALTH--";
                 label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
                 break;
             case Effect.MaxHealthUp:
                 var bonus = (int) (player.MaxHealth * 0.30f);
                 player.MaxHealth += bonus;
                 player.Health = Math.Min(player.Health + bonus, player.MaxHealth);
-                label.Text = "max hp++";
+                label.Text = "MAX HP++";
                 label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
                 break;
             case Effect.MaxHealthDown:
                 player.MaxHealth = Math.Max((int) (player.MaxHealth - player.MaxHealth * 0.15f), 1);
                 player.Health = Math.Min(player.Health, player.MaxHealth);
-                label.Text = "max hp--";
+                label.Text = "MAX HP--";
                 label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
                 break;
             case Effect.SpeedUp:
                 player.Speed += 20;
-                label.Text = "speed++";
+                label.Text = "SPEED++";
                 label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
                 break;
             case Effect.SpeedDown:
                 player.Speed = Math.Max(player.Speed - 10, 100);
-                label.Text = "speed--";
+                label.Text = "SPEED--";
                 label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
                 break;
             case Effect.DamageUp:
                 player.Damage += (int) (player.Damage * 0.30f);
-                label.Text = "dmg++";
+                label.Text = "DAMAGE++";
                 label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
                 break;
             case Effect.DamageDown:
                 player.Damage = Math.Max((int) (player.Damage - player.Damage * 0.05f), 1);
-                label.Text = "dmg--";
+                label.Text = "DAMAGE--";
                 label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
                 break;
         }

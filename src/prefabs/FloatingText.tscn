@@ -1,7 +1,14 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
-[sub_resource type="Animation" id=1]
-resource_name = "fade out"
+[ext_resource path="res://assets/fonts/pixelated.ttf" type="DynamicFontData" id=1]
+
+[sub_resource type="DynamicFont" id=1]
+size = 8
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 1 )
+
+[sub_resource type="Animation" id=2]
 tracks/0/type = "method"
 tracks/0/path = NodePath(".")
 tracks/0/interp = 1
@@ -42,19 +49,19 @@ tracks/2/keys = {
 }
 
 [node name="FloatingText" type="Position2D"]
-scale = Vector2( 0.5, 0.5 )
 z_index = 4096
 
 [node name="Label" type="Label" parent="."]
 modulate = Color( 1, 1, 1, 0.909091 )
 margin_top = -14.0
 margin_right = 30.0
+custom_fonts/font = SubResource( 1 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
-text = "health++"
+text = "HEALTH++"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "fade out"
-"anims/fade out" = SubResource( 1 )
+"anims/fade out" = SubResource( 2 )
