@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scripts/Potion.cs" type="Script" id=1]
+[ext_resource path="res://prefabs/potions/PotionObject.tscn" type="PackedScene" id=2]
+[ext_resource path="res://prefabs/FloatingText.tscn" type="PackedScene" id=3]
+
+[node name="DamageDownPotion" type="Node"]
+script = ExtResource( 1 )
+_floatingTextPrefab = ExtResource( 3 )
+_damageBonusRatio = -0.05
+_effectText = "DAMAGE--"
+_effectTextColor = Color( 1, 0, 0, 1 )
+
+[node name="PotionObject" parent="." instance=ExtResource( 2 )]

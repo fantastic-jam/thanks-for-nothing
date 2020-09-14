@@ -1,33 +1,44 @@
 using System;
 using Godot;
 
-public class Potion : StaticBody2D
+public class Potion : Node
 {
     private const float Speed = 300.0f;
-    private readonly RandomNumberGenerator _rand = new RandomNumberGenerator();
 
-    [Export] private PackedScene _labelPrefab = null;
+    [Export] private PackedScene _floatingTextPrefab;
 
+    public Vector2 InitialPosition;
+    public float InitialRotation;
     public Vector2 Destination;
 
-    private Area2D _area;
-    private Vector2 _origin;
-    private float _totalDistance;
+    [Export] private float _healthBonusRatio;
+    [Export] private float _maxHealthBonusRatio;
+    [Export] private float _damageBonusRatio;
+    [Export] private float _speedBonusRatio;
+    [Export] private string _effectText;
+    [Export] private Color _effectTextColor;
+
+    private Node2D _potionObject;
     private Sprite _sprite;
+    private Area2D _area;
+    private float _totalDistance;
 
     public override void _Ready()
     {
-        _rand.Randomize();
-        _area = GetNode<Area2D>("Area2D");
-        _sprite = GetNode<Sprite>("Sprite");
-        _origin = Position;
-        _totalDistance = (_origin - Destination).Length();
+        _potionObject = GetNode<Node2D>("PotionObject");
+        _area = _potionObject.GetNode<Area2D>("Area2D");
+        _sprite = _potionObject.GetNode<Sprite>("Sprite");
+
+        _potionObject.Rotation = InitialRotation;
+        _potionObject.Position = InitialPosition;
+        _totalDistance = (InitialPosition - Destination).Length();
+        _area.Connect("body_entered", this, nameof(OnEnter));
     }
 
     public override void _PhysicsProcess(float delta)
     {
         if (Destination == Vector2.Zero) return;
-        if ((Position - Destination).Length() < 5.0f)
+        if ((_potionObject.Position - Destination).Length() < 5.0f)
         {
             CallDeferred(nameof(OnDestinationReached));
             return;
@@ -42,12 +53,12 @@ public class Potion : StaticBody2D
         float curve = GetTravelCurve(progression);
         _sprite.Scale = (1 + curve) * Vector2.One;
         _sprite.Rotation += 10.0f * delta;
-        Translate(Position.DirectionTo(Destination) * Speed * delta);
+        _potionObject.Translate(_potionObject.Position.DirectionTo(Destination) * Speed * delta);
     }
 
     private float GetTravelProgression()
     {
-        float remainingDistance = (Position - Destination).Length();
+        float remainingDistance = (_potionObject.Position - Destination).Length();
         return (_totalDistance - remainingDistance) / _totalDistance;
     }
 
@@ -64,79 +75,27 @@ public class Potion : StaticBody2D
         QueueFree();
     }
 
-    private enum Effect
+    private void ApplyTo(Unit unit)
     {
-        HealthUp,
-        HealthDown,
-        MaxHealthUp,
-        MaxHealthDown,
-        SpeedUp,
-        SpeedDown,
-        DamageUp,
-        DamageDown
+        ShowEffect(unit);
+        unit.MaxHealth = Math.Max(1, unit.MaxHealth + (int) (unit.MaxHealth * _maxHealthBonusRatio));
+        unit.Health += Math.Max(1, Math.Min(unit.Health + (int) (unit.MaxHealth * _healthBonusRatio), unit.MaxHealth));
+        unit.Speed = Math.Max(100, unit.Speed + unit.Speed * _speedBonusRatio);
+        unit.Damage = Math.Max(10, unit.Damage + (int) (unit.Damage * _damageBonusRatio));
     }
 
-    private static readonly Array EffectList = Enum.GetValues(typeof(Effect));
-
-    private void ApplyTo(Unit player)
+    private void ShowEffect(Unit unit)
     {
-        var effect = (Effect) _rand.RandiRange(0, EffectList.Length - 1);
-        var floatingLabel = (Node2D) _labelPrefab.Instance();
-        var label = floatingLabel.GetNode<Label>("Label");
-        switch (effect)
-        {
-            case Effect.HealthUp:
-                player.Health = Math.Min((int) (player.Health + player.MaxHealth * 0.30f), player.MaxHealth);
-                label.Text = "HEALTH++";
-                label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
-                break;
-            case Effect.HealthDown:
-                player.Health = Math.Max((int) (player.Health - player.MaxHealth * 0.15f), 1);
-                label.Text = "HEALTH--";
-                label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
-                break;
-            case Effect.MaxHealthUp:
-                var bonus = (int) (player.MaxHealth * 0.30f);
-                player.MaxHealth += bonus;
-                player.Health = Math.Min(player.Health + bonus, player.MaxHealth);
-                label.Text = "MAX HP++";
-                label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
-                break;
-            case Effect.MaxHealthDown:
-                player.MaxHealth = Math.Max((int) (player.MaxHealth - player.MaxHealth * 0.15f), 1);
-                player.Health = Math.Min(player.Health, player.MaxHealth);
-                label.Text = "MAX HP--";
-                label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
-                break;
-            case Effect.SpeedUp:
-                player.Speed += 20;
-                label.Text = "SPEED++";
-                label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
-                break;
-            case Effect.SpeedDown:
-                player.Speed = Math.Max(player.Speed - 10, 100);
-                label.Text = "SPEED--";
-                label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
-                break;
-            case Effect.DamageUp:
-                player.Damage += (int) (player.Damage * 0.30f);
-                label.Text = "DAMAGE++";
-                label.AddColorOverride("font_color", Color.Color8(0, 255, 0));
-                break;
-            case Effect.DamageDown:
-                player.Damage = Math.Max((int) (player.Damage - player.Damage * 0.05f), 1);
-                label.Text = "DAMAGE--";
-                label.AddColorOverride("font_color", Color.Color8(255, 0, 0));
-                break;
-        }
-
-        player.AddChild(floatingLabel);
+        var floatingText = (FloatingText) _floatingTextPrefab.Instance();
+        floatingText.Text = _effectText;
+        floatingText.Color = _effectTextColor;
+        unit.AddChild(floatingText);
     }
 
     private void OnDestinationReached()
     {
-        Position = Destination;
-        ZIndex = 0;
+        _potionObject.Position = Destination;
+        _potionObject.ZIndex = 0;
         _sprite.Scale = Vector2.One;
         Destination = Vector2.Zero;
         _area.Monitoring = true;

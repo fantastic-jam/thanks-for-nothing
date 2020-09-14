@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="scripts\DropZone.cs" />
+    <Compile Include="scripts\FloatingText.cs" />
     <Compile Include="scripts\GameManager.cs" />
     <Compile Include="scripts\HUD.cs" />
     <Compile Include="scripts\Monster.cs" />
