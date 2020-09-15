@@ -4,7 +4,6 @@
 
 [sub_resource type="Animation" id=1]
 resource_name = "left death"
-length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:rotation_degrees")
 tracks/0/interp = 1
@@ -41,10 +40,21 @@ tracks/2/keys = {
 "update": 1,
 "values": [ false ]
 }
+tracks/3/type = "value"
+tracks/3/path = NodePath("Sprite:region_rect")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.6, 0.7, 0.8, 0.9, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ Rect2( 0, 0, 16, 16 ), Rect2( 16, 0, 16, 16 ), Rect2( 32, 0, 16, 16 ), Rect2( 48, 0, 16, 16 ), Rect2( 64, 0, 16, 16 ), Rect2( 80, 0, 16, 16 ) ]
+}
 
 [sub_resource type="Animation" id=2]
 resource_name = "right death"
-length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:rotation_degrees")
 tracks/0/interp = 1
@@ -81,15 +91,26 @@ tracks/2/keys = {
 "update": 1,
 "values": [ true ]
 }
+tracks/3/type = "value"
+tracks/3/path = NodePath("Sprite:region_rect")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.6, 0.7, 0.8, 0.9, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ Rect2( 0, 0, 16, 16 ), Rect2( 16, 0, 16, 16 ), Rect2( 32, 0, 16, 16 ), Rect2( 48, 0, 16, 16 ), Rect2( 64, 0, 16, 16 ), Rect2( 80, 0, 16, 16 ) ]
+}
 
 [node name="DeadPlayer" type="Node2D"]
 
 [node name="Sprite" type="Sprite" parent="."]
-position = Vector2( -24, 38 )
-rotation = -1.5708
 scale = Vector2( 2, 2 )
 texture = ExtResource( 1 )
 centered = false
+flip_h = true
 region_enabled = true
 region_rect = Rect2( 0, 0, 16, 16 )
 __meta__ = {
