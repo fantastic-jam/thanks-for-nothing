@@ -10,6 +10,7 @@ public class Unit : KinematicBody2D
     public float BumpStrength { get; set; }
     public uint StunDurationMs { get; set; }
     public bool LookingToRight { get; set; }
+    public string IdleAnimation { get; set; }
 
     public event Action OnDeath;
 
@@ -57,6 +58,10 @@ public class Unit : KinematicBody2D
             _animationPlayer.Play("walk");
             _direction = _velocity.Normalized();
             _sprite.FlipH = _velocity.x < 0 ? LookingToRight : !LookingToRight;
+        }
+        else if (IdleAnimation != null)
+        {
+            _animationPlayer.Play(IdleAnimation);
         }
         else
         {

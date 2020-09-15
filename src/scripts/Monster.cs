@@ -19,7 +19,7 @@ public class Monster : Unit
     public override void _Ready()
     {
         base._Ready();
-        Target.OnDeath += () => Target = null;
+        Target.OnDeath += Celebrate;
     }
 
     public override void _Process(float delta)
@@ -37,6 +37,7 @@ public class Monster : Unit
         {
             _velocity = Vector2.Zero;
         }
+
         base._Process(delta);
     }
 
@@ -49,4 +50,9 @@ public class Monster : Unit
         return bump;
     }
 
+    private void Celebrate()
+    {
+        Target = null;
+        IdleAnimation = "celebrate";
+    }
 }
