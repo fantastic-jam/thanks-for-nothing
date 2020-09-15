@@ -3,7 +3,7 @@ using Godot;
 public class Player : Unit
 {
     [Export] private PackedScene _swordPrefab = null;
-    [Export] private PackedScene _gravestonePrefab = null;
+    [Export] private PackedScene _deadPlayerPrefab = null;
     [Export] private int _device = 0;
 
     private uint _attackCooldown = 300;
@@ -54,8 +54,12 @@ public class Player : Unit
 
     private void DieEffect()
     {
-        var gravestone = (Node2D)_gravestonePrefab.Instance();
-        gravestone.Position = Position;
-        GetParent().AddChild(gravestone);
+        var deadPlayer = (Node2D)_deadPlayerPrefab.Instance();
+        deadPlayer.ZIndex = ZIndex;
+        deadPlayer.Position = Position;
+        deadPlayer.GetNode<Sprite>("Sprite").FlipH = _sprite.FlipH;
+        deadPlayer.GetNode<AnimationPlayer>("AnimationPlayer").Autoplay = _sprite.FlipH ? "right death" : "left death";
+        _sprite.Visible = false;
+        GetParent().AddChild(deadPlayer);
     }
 }

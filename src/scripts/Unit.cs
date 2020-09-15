@@ -21,6 +21,7 @@ public class Unit : KinematicBody2D
     protected Vector2 _direction = Vector2.Up;
     protected Vector2 _velocity = Vector2.Zero;
     protected uint _stunUntil = 0;
+    protected bool _isDead;
 
     public override void _Ready()
     {
@@ -70,12 +71,13 @@ public class Unit : KinematicBody2D
 
     public void OnHit(Unit attacker, int damage)
     {
-        GD.Print($"Unit [Health={Health}, MaxHealth={MaxHealth}] attacked with damage {damage}");
+        if (_isDead) return;
+
         MoveAndSlide(attacker.Position.DirectionTo(Position) * BumpStrength);
         Health -= damage;
-        GD.Print($"New unit state [Health={Health}, MaxHealth={MaxHealth}]");
         if (Health < 1)
         {
+            _isDead = true;
             OnDeath?.Invoke();
             QueueFree();
         }
