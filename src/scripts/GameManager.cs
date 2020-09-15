@@ -14,6 +14,7 @@ public class GameManager : Node
     private Arena _arena;
     private Node2D _playerSpawner;
     private Player _player;
+    private Wizzard _wizzard;
     private Timer _monsterSpawnTimer;
     private HUD _hud;
 
@@ -26,6 +27,7 @@ public class GameManager : Node
         _rand.Randomize();
         _hud = GetNode<HUD>("HUD");
         _arena = GetNode<Arena>("../Arena");
+        _wizzard = GetNode<Wizzard>("../Friend/Wizzard");
         _playerSpawner = GetNode<Node2D>("PlayerSpawner");
         _player = SpawnPlayer();
         _monsterSpawnTimer = new Timer
@@ -108,6 +110,7 @@ public class GameManager : Node
 
     private void OnPlayerDeath()
     {
+        _wizzard.Stop();
         _monsterSpawnTimer.Stop();
         var timer = new Timer
         {

@@ -10,20 +10,26 @@ public class Wizzard : Sprite
 
     private Arena _arena;
     private Node _scene;
+    private Timer _timer;
 
     public override void _Ready()
     {
         _rand.Randomize();
         _scene = GetTree().CurrentScene;
         _arena = _scene.FindNode("Arena", true, false) as Arena;
-        var timer = new Timer
+        _timer = new Timer
         {
             WaitTime = _dropIntervalInSec,
             OneShot = false
         };
-        timer.Connect("timeout", this, nameof(ProvideHelp));
-        AddChild(timer);
-        timer.Start();
+        _timer.Connect("timeout", this, nameof(ProvideHelp));
+        AddChild(_timer);
+        _timer.Start();
+    }
+
+    public void Stop()
+    {
+        _timer.OneShot = true;
     }
 
     private void ProvideHelp()
