@@ -7,7 +7,7 @@
 [node name="SpeedDownPotion" type="Node"]
 script = ExtResource( 1 )
 _floatingTextPrefab = ExtResource( 3 )
-_speedBonusRatio = -0.05
+_speedBonusRatio = -0.03
 _effectText = "SPEED--"
 _effectTextColor = Color( 1, 0, 0, 1 )
 
