@@ -110,7 +110,7 @@ public class GameManager : Node
 
     private void OnPlayerDeath()
     {
-        _wizzard.Stop();
+        _wizzard.OnPlayerDeath();
         _monsterSpawnTimer.Stop();
         var timer = new Timer
         {
