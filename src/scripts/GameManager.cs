@@ -56,7 +56,7 @@ public class GameManager : Node
 
     public override void _Input(InputEvent @event)
     {
-        if (_isGameOver)
+        if (_isGameOver && @event.IsPressed() && !@event.IsEcho())
         {
             switch (@event)
             {
