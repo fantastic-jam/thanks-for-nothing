@@ -10,6 +10,8 @@ public class GameManager : Node
     [Export] private PackedScene _playerPrefab = null;
     [Export] private PackedScene _monsterPrefab = null;
     [Export] private PackedScene _gameOver = null;
+    [Export] private AudioStream _dungeonMusic = null;
+    [Export] private AudioStream _gameOverMusic = null;
 
     private Arena _arena;
     private Node2D _playerSpawner;
@@ -17,6 +19,7 @@ public class GameManager : Node
     private Wizzard _wizzard;
     private Timer _monsterSpawnTimer;
     private HUD _hud;
+    private AudioStreamPlayer _musicPlayer;
 
     private int _monsterCount;
     private int _monsterKill;
@@ -29,6 +32,7 @@ public class GameManager : Node
         _arena = GetNode<Arena>("../Arena");
         _wizzard = GetNode<Wizzard>("../Friend/Wizzard");
         _playerSpawner = GetNode<Node2D>("PlayerSpawner");
+        _musicPlayer = GetNode<AudioStreamPlayer>("MusicPlayer");
         _player = SpawnPlayer();
         _monsterSpawnTimer = new Timer
         {
@@ -38,6 +42,8 @@ public class GameManager : Node
         };
         _monsterSpawnTimer.Connect("timeout", this, nameof(SpawnMonster));
         AddChild(_monsterSpawnTimer);
+        _musicPlayer.Stream = _dungeonMusic;
+        _musicPlayer.Play();
     }
 
     public override void _Process(float delta)
@@ -110,6 +116,8 @@ public class GameManager : Node
 
     private void OnPlayerDeath()
     {
+        _musicPlayer.Stream = _gameOverMusic;
+        _musicPlayer.Play();
         _wizzard.OnPlayerDeath();
         _monsterSpawnTimer.Stop();
         var timer = new Timer

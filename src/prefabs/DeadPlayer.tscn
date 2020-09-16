@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://assets/sprites/hero_dead.png" type="Texture" id=1]
+[ext_resource path="res://assets/sfx/player_death.ogg" type="AudioStream" id=2]
 
 [sub_resource type="Animation" id=1]
 resource_name = "left death"
@@ -121,3 +122,7 @@ __meta__ = {
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 "anims/left death" = SubResource( 1 )
 "anims/right death" = SubResource( 2 )
+
+[node name="SoundPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 2 )
+autoplay = true

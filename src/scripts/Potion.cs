@@ -21,6 +21,7 @@ public class Potion : Node
     private Node2D _potionObject;
     private Sprite _sprite;
     private Area2D _area;
+    private AudioStreamPlayer2D _soundPlayer;
     private float _totalDistance;
 
     public override void _Ready()
@@ -28,6 +29,7 @@ public class Potion : Node
         _potionObject = GetNode<Node2D>("PotionObject");
         _area = _potionObject.GetNode<Area2D>("Area2D");
         _sprite = _potionObject.GetNode<Sprite>("Sprite");
+        _soundPlayer = _potionObject.GetNode<AudioStreamPlayer2D>("SoundPlayer");
 
         _potionObject.Rotation = InitialRotation;
         _potionObject.Position = InitialPosition;
@@ -67,11 +69,14 @@ public class Potion : Node
         return (0.5f - Math.Abs(progression - 0.5f)) * 2.0f;
     }
 
-    public void OnEnter(Node other)
+    public async void OnEnter(Node other)
     {
-        if (!(other is Player player))
+        if (!_potionObject.Visible || !(other is Player player))
             return;
+        _potionObject.Visible = false;
         ApplyTo(player);
+        _soundPlayer.Play();
+        await ToSignal(_soundPlayer, "finished");
         QueueFree();
     }
 

@@ -12,11 +12,14 @@ public class Unit : KinematicBody2D
     public bool LookingToRight { get; set; }
     public string IdleAnimation { get; set; }
 
+    [Export] private AudioStream _hurtSound;
+
     public event Action OnDeath;
 
     protected Sprite _sprite;
     protected ProgressBar _healthBar;
     protected AnimationPlayer _animationPlayer;
+    protected AudioStreamPlayer2D _soundPlayer;
     protected Vector2 _center = Vector2.Zero;
     protected Vector2 _size = Vector2.Zero;
     protected Vector2 _direction = Vector2.Up;
@@ -29,6 +32,7 @@ public class Unit : KinematicBody2D
         _sprite = GetNode<Sprite>("Sprite");
         _healthBar = (ProgressBar) FindNode("HealthBar");
         _animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
+        _soundPlayer = GetNode<AudioStreamPlayer2D>("SoundPlayer");
         _size = _sprite.RegionRect.Size;
         _center = new Vector2(_size.x / 2, _size.y / 2);
     }
@@ -42,6 +46,7 @@ public class Unit : KinematicBody2D
 
     public override void _PhysicsProcess(float delta)
     {
+        if (_isDead) return;
         _velocity = MoveAndSlide(_velocity, Vector2.Up);
     }
 
@@ -53,6 +58,8 @@ public class Unit : KinematicBody2D
 
     protected void HandleBody()
     {
+        if (_isDead) return;
+
         if (_velocity != Vector2.Zero)
         {
             _animationPlayer.Play("walk");
@@ -71,6 +78,7 @@ public class Unit : KinematicBody2D
 
     public void Hit(Unit target)
     {
+        if (_isDead) return;
         target.OnHit(this, Damage);
     }
 
@@ -78,16 +86,30 @@ public class Unit : KinematicBody2D
     {
         if (_isDead) return;
 
+        if (_hurtSound != null)
+        {
+            _soundPlayer.Stream = _hurtSound;
+            _soundPlayer.Play();
+        }
+
         MoveAndSlide(attacker.Position.DirectionTo(Position) * BumpStrength);
         Health -= damage;
         if (Health < 1)
         {
-            _isDead = true;
-            OnDeath?.Invoke();
-            QueueFree();
+            Die();
+            return;
         }
 
         if (StunDurationMs > 0)
             _stunUntil = OS.GetTicksMsec() + StunDurationMs;
+    }
+
+    protected async void Die()
+    {
+        _isDead = true;
+        Visible = false;
+        OnDeath?.Invoke();
+        await ToSignal(_soundPlayer, "finished");
+        QueueFree();
     }
 }
